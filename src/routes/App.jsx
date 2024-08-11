@@ -1,8 +1,12 @@
 import React from "react";
-import Start from "@/components/Start";
+import { Outlet } from "react-router-dom";
 
-function App() {
-  return <Start />;
-}
+const App = () => {
+  return (
+    <div>
+      <Outlet />
+    </div>
+  );
+};
 
 export default App;
