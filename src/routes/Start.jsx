@@ -58,6 +58,10 @@ function Start() {
           Get Started
         </Link>
       </StyledButton>
+
+      <button>
+        <Link to="/home">home</Link>
+      </button>
     </main>
   );
 }
