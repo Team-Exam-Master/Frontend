@@ -61,9 +61,9 @@ function Prompt() {
       }
 
       try {
-        // 서버에 메시지 전송
+        // 서버에 메시지 전달
         const response = await axios.post(
-          "http://192.168.1.136:8080/prompt/add?historyId=",
+          "http://weasel.kkamji.net/prompt/add?historyId=",
           formData,
           {
             headers: {
