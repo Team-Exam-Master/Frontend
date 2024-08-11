@@ -3,10 +3,18 @@ import ReactDOM from "react-dom/client";
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import "./index.css";
 import App from "./routes/App";
+import Auth from "./routes/Auth";
+
+
+
 const router = createBrowserRouter([
   {
     path: "/",
     element: <App />, // 시작 페이지
+  },
+  {
+    path: "/auth",
+    element: <Auth />, // 인증 페이지
   },
 ]);
 
