@@ -62,21 +62,23 @@ function Prompt() {
 
       try {
         // 서버에 메시지 전달
-        const response = await axios.post(
-          "http://weasel.kkamji.net/prompt/add?historyId=",
-          formData,
-          {
-            headers: {
-              "Content-Type":
-                "multipart/form-data; boundary=<calculated when request is sent>",
-            },
-          }
+        const response = await JSON.parse(
+          axios.post(
+            "http://weasel.kkamji.net/prompt/add?historyId=",
+            formData,
+            {
+              headers: {
+                "Content-Type":
+                  "multipart/form-data; boundary=<calculated when request is sent>",
+              },
+            }
+          )
         );
 
         // 응답값 가공
         const botResponse = {
           type: "bot",
-          content: JSON.stringify(response.data.prompt),
+          content: response.data.prompt,
           imageUrl: null,
         };
 
