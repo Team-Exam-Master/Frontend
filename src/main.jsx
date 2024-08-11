@@ -5,6 +5,7 @@ import "./index.css";
 import App from "./routes/App";
 import Home from "./routes/Home";
 import Start from "./components/Start";
+import Auth from "./routes/Auth";
 
 const router = createBrowserRouter([
   {
@@ -14,6 +15,10 @@ const router = createBrowserRouter([
       { path: "/", element: <Start /> },
       { path: "/home", element: <Home /> },
     ],
+  },
+  {
+    path: "/auth",
+    element: <Auth />, // 인증 페이지
   },
 ]);
 
