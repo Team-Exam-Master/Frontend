@@ -23,7 +23,7 @@ module.exports = {
         "gradient-bg": "linear-gradient(180deg, #232029, #231e2d)",
       },
       dropShadow: {
-        "custom-white": "0 0 8px rgba(255 , 255, 255, 0)", // 완전히 불투명한 하얀색 그림자
+        "custom-white": "0 0 8px rgba(255 , 255, 255, 1)", // 완전히 불투명한 하얀색 그림자
       },
     },
   },
