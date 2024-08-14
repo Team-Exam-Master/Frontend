@@ -28,7 +28,6 @@ const Auth = () => {
       return;
     }
 
-
     // 로그인 상태에 따라 요청 URL을 설정
     const url = isLogin
       ? "https://weasel.kkamji.net/v2/login" // backend와 맞춰서 변경 예정
@@ -64,7 +63,8 @@ const Auth = () => {
 
   const handleFileChange = (e) => {
     const file = e.target.files[0]; //파일 input 엘리먼트에서 첫 번째 파일을 가져옴
-    if (file && file.type.startsWith("image/")) { //파일이 존재하고(file) 파일의 유형이 이미지인지 확인
+    if (file && file.type.startsWith("image/")) {
+      //파일이 존재하고(file) 파일의 유형이 이미지인지 확인
       setProfilePicture(file);
 
       // 이미지 미리보기 설정
@@ -126,7 +126,9 @@ const Auth = () => {
               <button
                 type="button"
                 className="inline-flex items-center px-4 py-2 bg-white border border-gray-300 rounded-md font-semibold text-xs text-gray-700 uppercase tracking-widest shadow-sm hover:text-gray-500 focus:outline-none focus:border-blue-400 focus:shadow-outline-blue active:text-gray-800 active:bg-gray-50 transition ease-in-out duration-150 mt-2"
-                onClick={() => document.getElementById("profilePicture").click()}
+                onClick={() =>
+                  document.getElementById("profilePicture").click()
+                }
               >
                 Select New Photo
               </button>
