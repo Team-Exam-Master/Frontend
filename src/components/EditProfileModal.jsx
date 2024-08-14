@@ -24,7 +24,7 @@ const EditProfileModal = ({ userProfile, onClose, onUpdate }) => {
         }
 
         // 인증 토큰을 사용하여 사용자 프로필 데이터를 가져오기
-        const response = await axios.get("https://weasel-backend.kkamji.net/member/profilePicture", {
+        const response = await axios.get("https://weasel-backend.kkamji.net/member/view", {
           headers: { Authorization: `Bearer ${token}` },
         });
         const userProfile = response.data; // 프로필 데이터

@@ -6,6 +6,7 @@ import App from "./routes/App";
 import Home from "./routes/Home";
 import Start from "./routes/Start";
 import Auth from "./routes/Auth";
+import AuthProvider from "./components/AuthContext"; 
 
 const router = createBrowserRouter([
   {
@@ -15,7 +16,6 @@ const router = createBrowserRouter([
   {
     path: "/home",
     element: <Home />, // 메인 페이지
-    // loader: () => {},
   },
   {
     path: "/auth",
@@ -29,6 +29,8 @@ ReactDOM.createRoot(document.getElementById("root")).render(
   // 'React.StrictMode' 개발 중에 잠재적인 문제를 감지하고 경고를 표시
   // 하위 모든 컴포넌트에 적용, 빌드시 자동으로 비활성화
   <React.StrictMode>
-    <RouterProvider router={router} />
+    <AuthProvider>
+      <RouterProvider router={router} />
+    </AuthProvider>
   </React.StrictMode>
 );
