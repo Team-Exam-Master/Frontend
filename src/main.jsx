@@ -10,11 +10,12 @@ import Auth from "./routes/Auth";
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <App />,
-    children: [
-      { path: "/", element: <Start /> },
-      { path: "/home", element: <Home /> },
-    ],
+    element: <Start />, // 시작 페이지
+  },
+  {
+    path: "/home",
+    element: <Home />, // 메인 페이지
+    // loader: () => {},
   },
   {
     path: "/auth",
