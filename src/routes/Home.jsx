@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import Prompt from "../components/Prompt";
 import History from "../components/History";
 import styled from "styled-components";
-
+import Header from "../components/Header";
 const SidebarContainer = styled.div`
   position: relative;
   border: 1px solid white;
@@ -45,12 +45,12 @@ const MainContainer = styled.div`
   border: 1px solid white;
 `;
 
-const Header = styled.div`
-  height: 7vh;
-  padding: 0 16px;
-  align-items: center;
-  border: 1px solid white;
-`;
+// const Header = styled.div`
+//   height: 7vh;
+//   padding: 0 16px;
+//   align-items: center;
+//   border: 1px solid white;
+// `;
 
 const Content = styled.div`
   display: flex;
@@ -87,7 +87,7 @@ const Home = () => {
         </ToggleButton>
       </SidebarContainer>
       <MainContainer>
-        <Header>헤더</Header>
+        <Header />
         <Content>
           <Prompt />
         </Content>

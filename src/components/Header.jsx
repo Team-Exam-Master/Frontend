@@ -31,9 +31,12 @@ const Header = () => {
       const checkLoginStatus = async () => {
         try {
           // 사용자의 프로필 정보를 가져오는 API 엔드포인트
-          const { status, data } = await axios.get("https://weasel-backend.kkamji.net/member/view", {
-            headers: { Authorization: `Bearer ${token}` },
-          });
+          const { status, data } = await axios.get(
+            "https://weasel-backend.kkamji.net/member/view",
+            {
+              headers: { Authorization: `Bearer ${token}` },
+            }
+          );
           // 정상적으로 응답을 받으면 사용자 사용자 정보를 상태에 저장
           if (status === 200 && data) {
             setIsLoggedIn(true);
@@ -64,9 +67,15 @@ const Header = () => {
   // 로그아웃 버튼을 클릭했을 때 호출
   const handleLogout = async () => {
     try {
-      await axios.post("https://weasel-backend.kkamji.net/logout", {}, {
-        headers: { Authorization: `Bearer ${localStorage.getItem("authToken")}` }, // HTTP 요청을 보낼 때 Authorization 헤더에 인증 토큰을 포함시키는 역할
-      });
+      await axios.post(
+        "https://weasel-backend.kkamji.net/logout",
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("authToken")}`,
+          }, // HTTP 요청을 보낼 때 Authorization 헤더에 인증 토큰을 포함시키는 역할
+        }
+      );
       setIsLoggedIn(false);
       setUserProfile(INITIAL_USER_PROFILE);
       localStorage.removeItem("authToken");
@@ -82,9 +91,12 @@ const Header = () => {
     // 프로필 업데이트 시 호출하여 최신 정보를 가져옵니다.
     try {
       const token = localStorage.getItem("authToken");
-      const { data } = await axios.get("https://weasel-backend.kkamji.net/member", {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      const { data } = await axios.get(
+        "https://weasel-backend.kkamji.net/member",
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
       setUserProfile(data);
       localStorage.setItem("profilePicture", JSON.stringify(data)); // 프로필 정보를 localStorage에 저장
     } catch (error) {
@@ -147,7 +159,7 @@ const Header = () => {
   if (window.location.pathname === "/") return null; // 사용자가 루트 페이지에 있을 때 헤더가 표시되지 않도록 함
 
   return (
-    <nav className="fixed top-0 left-0 w-full flex items-center justify-between p-4 bg-transparent text-white">
+    <nav className="w-full flex items-center justify-between p-4 bg-transparent text-white">
       <div className="flex items-center">
         <a href="/" className="flex items-center space-x-3 rtl:space-x-reverse">
           <span className="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">

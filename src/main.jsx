@@ -2,7 +2,7 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import "./index.css";
-import App from "./routes/App";
+
 import Home from "./routes/Home";
 import Start from "./routes/Start";
 import Auth from "./routes/Auth";
@@ -15,8 +15,8 @@ const router = createBrowserRouter([
   {
     path: "/home",
     element: <Home />, // 메인 페이지
-    // loader: () => {},
   },
+
   {
     path: "/auth",
     element: <Auth />, // 인증 페이지
