@@ -50,14 +50,18 @@ const Auth = () => {
       password: password,
     };
 
-    if (!isLogin && profilePicture) {
-      data.profilePicture = profilePicture; // base64 방식. 
+    const formData = new FormData();
+
+    formData.append("memberDTOstr", JSON.stringify(data));
+
+    if (profilePicture) {
+      formData.append("file", profilePicture);
     }
 
     try {
-      const response = await axios.post(url, JSON.stringify(data), {
+      const response = await axios.post(url, formData, {
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "multipart/formdata",
         },
       });
 
@@ -75,7 +79,7 @@ const Auth = () => {
           maxAge: 7 * 24 * 60 * 60,
         });
 
-        navigate("/prompt");
+        navigate("/home");
       } else {
         alert("인증 실패");
       }
