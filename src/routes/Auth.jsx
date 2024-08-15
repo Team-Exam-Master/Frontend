@@ -70,7 +70,7 @@ const Auth = () => {
           maxAge: 7 * 24 * 60 * 60,
         });
 
-        navigate("/prompt");
+        navigate("/home");
       } else {
         alert("인증 실패");
       }
