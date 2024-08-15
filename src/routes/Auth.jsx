@@ -45,23 +45,32 @@ const Auth = () => {
       ? "https://weasel-backend.kkamji.net/v1/login"
       : "https://weasel-backend.kkamji.net/v1/member/join";
 
+    const data = {
+      email: email,
+      password: password,
+    };
+
     const formData = new FormData();
-    formData.append("email", email);
-    formData.append("password", password);
+
+    formData.append("memberDTOstr", JSON.stringify(data));
 
     if (profilePicture) {
-      formData.append("profilePicture", profilePicture);
+      formData.append("file", profilePicture);
     }
 
     try {
-      const response = await axios.post(url, formData);
+      const response = await axios.post(url, formData, {
+        headers: {
+          "Content-Type": "multipart/formdata",
+        },
+      });
 
       if (response.status === 200) {
-        const { token, history } = response.data; // 서버에서 받은 history 포함
+        const { token, history } = response.data;
 
         setCookie("authToken", token, { path: "/", maxAge: 7 * 24 * 60 * 60 });
         setCookie("email", email, { path: "/", maxAge: 7 * 24 * 60 * 60 });
-        setCookie("profilePicure", profilePicture, {
+        setCookie("profilePicture", profilePicture, {
           path: "/",
           maxAge: 7 * 24 * 60 * 60,
         });
