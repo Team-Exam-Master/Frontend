@@ -15,8 +15,16 @@ export const AuthProvider = ({ children }) => {
   const [cookies] = useCookies(["history"]);
 
   useEffect(() => {
+    console.log("cookies.history:", cookies.history); // 쿠키 값 로그 출력
+
     if (cookies.history) {
-      setHistory(JSON.parse(cookies.history)); // 쿠키에서 history 데이터를 가져와서 상태에 저장
+      try {
+        const parsedHistory = JSON.parse(cookies.history);
+        console.log("Parsed history:", parsedHistory); // 파싱된 JSON 로그 출력
+        setHistory(parsedHistory); // 쿠키에서 history 데이터를 가져와서 상태에 저장
+      } catch (error) {
+        console.error("Failed to parse cookies.history:", error); // 파싱 에러 로그 출력
+      }
     }
   }, [cookies.history]);
 
