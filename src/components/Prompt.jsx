@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import styled from "styled-components";
 import TextareaAutosize from "react-textarea-autosize";
-import axios from "axios";
+import axios from "../axios";
 
 const ChatContainer = styled.div`
   display: flex;
@@ -126,16 +126,12 @@ function Prompt() {
 
       try {
         // 서버에 메시지 전달
-        const response = await axios.post(
-          "https://weasel-backend.kkamji.net/v1/prompt/add",
-          formData,
-          {
-            headers: {
-              "Content-Type":
-                "multipart/form-data; boundary=<calculated when request is sent>",
-            },
-          }
-        );
+        const response = await axios.post("/prompt/add", formData, {
+          headers: {
+            "Content-Type":
+              "multipart/form-data; boundary=<calculated when request is sent>",
+          },
+        });
 
         // 응답값 가공
         const botResponse = {
