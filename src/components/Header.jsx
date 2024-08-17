@@ -32,10 +32,7 @@ const Header = () => {
         try {
           // 사용자의 프로필 정보를 가져오는 API 엔드포인트
           const { status, data } = await axios.get(
-            "https://weasel-backend.kkamji.net/v1/member/view",
-            {
-              headers: { Authorization: `Bearer ${token}` },
-            }
+            "https://weasel-backend.kkamji.net/v1/member/view"
           );
           // 정상적으로 응답을 받으면 사용자 사용자 정보를 상태에 저장
           if (status === 200 && data) {
