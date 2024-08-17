@@ -75,11 +75,7 @@ const Auth = () => {
 
     if (isLogin) {
       try {
-        const response = await axios.post(
-          "/login",
-          { withCredentials: true },
-          { email, password }
-        );
+        const response = await axios.post("/login", { email, password });
 
         if (response.status === 200) {
           // 서버 응답에서 올바른 필드 접근
