@@ -3,13 +3,13 @@ import Prompt from "../components/Prompt";
 import History from "../components/History";
 import styled from "styled-components";
 import Header from "../components/Header";
+
 const SidebarContainer = styled.div`
   position: relative;
-  border: 1px solid white;
 `;
 
 const Sidebar = styled.div`
-  width: ${({ $isOpen }) => ($isOpen ? "25vw" : "0")};
+  width: ${({ $isOpen }) => ($isOpen ? "20vw" : "0")};
   transition: width 0.3s;
   overflow: hidden;
 `;
@@ -44,13 +44,6 @@ const MainContainer = styled.div`
   overflow: hidden;
   border: 1px solid white;
 `;
-
-// const Header = styled.div`
-//   height: 7vh;
-//   padding: 0 16px;
-//   align-items: center;
-//   border: 1px solid white;
-// `;
 
 const Content = styled.div`
   display: flex;
@@ -97,3 +90,7 @@ const Home = () => {
 };
 
 export default Home;
+
+// export async function loader() {
+//   return await axios.get("https://weasel-backend.kkamji.net/v1/history/list");
+// }

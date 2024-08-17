@@ -106,13 +106,15 @@ function Prompt() {
 
       // formData에 전달값 세팅
       const formData = new FormData();
-      formData.append("promptDTO", JSON.stringify({ prompt: input }));
+      const promptStr = JSON.stringify({
+        prompt: input,
+      });
+
+      formData.append("promptDTO", promptStr);
 
       const file = fileInputRef.current?.files[0];
       if (file) {
         formData.append("file", file);
-      } else {
-        formData.append("file", null);
       }
 
       // 입력값 초기화
@@ -125,7 +127,7 @@ function Prompt() {
       try {
         // 서버에 메시지 전달
         const response = await axios.post(
-          "https://weasel-backend.kkamji.net/prompt/add",
+          "https://weasel-backend.kkamji.net/v1/prompt/add",
           formData,
           {
             headers: {
@@ -237,21 +239,23 @@ function Prompt() {
             onKeyDown={handleKeyDown}
             placeholder="Send a message or image..."
           />
-          <button type="submit">
-            <svg
-              fill="none"
-              viewBox="0 0 24 24"
-              strokeWidth="1.5"
-              stroke="currentColor"
-              className="size-8 mx-2 cursor-pointer"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M6 12 3.269 3.125A59.769 59.769 0 0 1 21.485 12 59.768 59.768 0 0 1 3.27 20.875L5.999 12Zm0 0h7.5"
-              />
-            </svg>
-          </button>
+          {!isAxiosLoading && (
+            <button type="submit">
+              <svg
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth="1.5"
+                stroke="currentColor"
+                className="size-8 mx-2 cursor-pointer"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M6 12 3.269 3.125A59.769 59.769 0 0 1 21.485 12 59.768 59.768 0 0 1 3.27 20.875L5.999 12Zm0 0h7.5"
+                />
+              </svg>
+            </button>
+          )}
           {isAxiosLoading && <img src="/spinner.gif" className="size-10" />}
         </InputContainer>
       </form>
