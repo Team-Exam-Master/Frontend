@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
-import { useCookies } from "react-cookie";
+import axios from "../axios";
+// import { useCookies } from "react-cookie";
 import { FaArrowLeft } from "react-icons/fa";
 import "../index.css";
 
@@ -49,12 +49,12 @@ const Auth = () => {
     handleFileChange,
   } = useAuth();
 
-  const [cookies, setCookie] = useCookies([
-    "authToken",
-    "email",
-    "profilePhoto",
-    "history",
-  ]);
+  // const [cookies, setCookie] = useCookies([
+  //   "authToken",
+  //   "email",
+  //   "profilePhoto",
+  //   "history",
+  // ]);
 
   const navigate = useNavigate();
 
@@ -62,38 +62,35 @@ const Auth = () => {
 
   const handleAuth = async (e) => {
     e.preventDefault();
-  
+
     if (!email || !password) {
       alert("이메일과 비밀번호를 입력해 주세요.");
       return;
     }
-  
+
     if (!isValidEmail(email)) {
       alert("유효한 이메일 주소를 입력해 주세요.");
       return;
     }
-  
+
     if (isLogin) {
       try {
         const response = await axios.post(
-          "https://weasel-backend.kkamji.net/v1/login",
+          "/login",
+          { withCredentials: true },
           { email, password }
         );
-  
+
         if (response.status === 200) {
           // 서버 응답에서 올바른 필드 접근
           const { resultCode, msg, profilePhoto } = response.data;
 
-          if (resultCode === 1) { // resultCode가 1이면 성공으로 처리
-            setCookie("email", email, { path: "/", maxAge: 7 * 24 * 60 * 60 });
-            setCookie("profilePhoto", profilePhoto, {
-              path: "/",
-              maxAge: 7 * 24 * 60 * 60,
-            });
-  
+          if (resultCode === 1) {
+            // resultCode가 1이면 성공으로 처리
+
             navigate("/home");
           } else {
-            alert(msg || "로그인 실패"); 
+            alert(msg || "로그인 실패");
           }
         } else {
           alert("로그인 실패");

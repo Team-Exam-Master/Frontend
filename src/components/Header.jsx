@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
+import axios from "../axios";
 import EditProfileModal from "./EditProfileModal"; // 모달 컴포넌트 임포트
 
 // 초기 사용자 프로필 정보 설정
@@ -31,9 +31,7 @@ const Header = () => {
       const checkLoginStatus = async () => {
         try {
           // 사용자의 프로필 정보를 가져오는 API 엔드포인트
-          const { status, data } = await axios.get(
-            "https://weasel-backend.kkamji.net/v1/member/view"
-          );
+          const { status, data } = await axios.get("/member/view");
           // 정상적으로 응답을 받으면 사용자 사용자 정보를 상태에 저장
           if (status === 200 && data) {
             setIsLoggedIn(true);
