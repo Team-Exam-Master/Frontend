@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
-import { useCookies } from "react-cookie";
+// import { useCookies } from "react-cookie";
 
 const AuthContext = createContext();
 
@@ -11,22 +11,22 @@ export const AuthProvider = ({ children }) => {
   const [password, setPassword] = useState("");
   const [profilePicture, setProfilePicture] = useState(null);
   const [photoPreview, setPhotoPreview] = useState(null);
-  const [history, setHistory] = useState([]); 
-  const [cookies] = useCookies(["history"]);
+  // const [history, setHistory] = useState([]);
+  // const [cookies] = useCookies(["history"]);
 
-  useEffect(() => {
-    console.log("cookies.history:", cookies.history); // 쿠키 값 로그 출력
+  // useEffect(() => {
+  //   console.log("cookies.history:", cookies.history); // 쿠키 값 로그 출력
 
-    if (cookies.history) {
-      try {
-        const parsedHistory = JSON.parse(cookies.history);
-        console.log("Parsed history:", parsedHistory); // 파싱된 JSON 로그 출력
-        setHistory(parsedHistory); // 쿠키에서 history 데이터를 가져와서 상태에 저장
-      } catch (error) {
-        console.error("Failed to parse cookies.history:", error); // 파싱 에러 로그 출력
-      }
-    }
-  }, [cookies.history]);
+  //   if (cookies.history) {
+  //     try {
+  //       const parsedHistory = JSON.parse(cookies.history);
+  //       console.log("Parsed history:", parsedHistory); // 파싱된 JSON 로그 출력
+  //       setHistory(parsedHistory); // 쿠키에서 history 데이터를 가져와서 상태에 저장
+  //     } catch (error) {
+  //       console.error("Failed to parse cookies.history:", error); // 파싱 에러 로그 출력
+  //     }
+  //   }
+  // }, [cookies.history]);
 
   const toggleAuthMode = () => setIsLogin(!isLogin);
 
@@ -56,7 +56,7 @@ export const AuthProvider = ({ children }) => {
     setPassword,
     toggleAuthMode,
     handleFileChange,
-    setHistory,
+    // setHistory,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

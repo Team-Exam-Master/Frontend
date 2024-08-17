@@ -32,7 +32,7 @@ const Header = () => {
         try {
           // 사용자의 프로필 정보를 가져오는 API 엔드포인트
           const { status, data } = await axios.get(
-            "https://weasel-backend.kkamji.net/member/view",
+            "https://weasel-backend.kkamji.net/v1/member/view",
             {
               headers: { Authorization: `Bearer ${token}` },
             }
@@ -68,7 +68,7 @@ const Header = () => {
   const handleLogout = async () => {
     try {
       await axios.post(
-        "https://weasel-backend.kkamji.net/logout",
+        "https://weasel-backend.kkamji.net/v1/logout",
         {},
         {
           headers: {
