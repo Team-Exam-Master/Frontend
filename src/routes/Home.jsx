@@ -96,5 +96,11 @@ const Home = () => {
 export default Home;
 
 export async function loader() {
-  return await axios.get("/history/list");
+  try {
+    const response = await axios.get("/history/list");
+    return response.data;
+  } catch (error) {
+    console.error("Loader error:", error);
+    return [];
+  }
 }

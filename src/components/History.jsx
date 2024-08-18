@@ -30,7 +30,7 @@ function History({ historyData }) {
         alt="Image"
         className="w-36 h-36 mx-auto rounded-full"
       />
-      <div className="m-4">느그의 척척박사 위즐</div>
+      <div className="m-4">당신의 척척박사 위즐</div>
       {histories.map((history) => (
         <div
           key={history.historyId}
