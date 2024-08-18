@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from "react";
 import styled from "styled-components";
 import TextareaAutosize from "react-textarea-autosize";
 import axios from "../axios";
+import useStore from "./store";
 
 const ChatContainer = styled.div`
   display: flex;
@@ -59,7 +60,9 @@ const StyledTextarea = styled(TextareaAutosize)`
 `;
 
 function Prompt() {
-  const [messages, setMessages] = useState([]);
+  const { messages } = useStore();
+  const addMessage = useStore((state) => state.addMessage);
+
   const [input, setInput] = useState("");
   const [previewImage, setPreviewImage] = useState(null);
   const fileInputRef = useRef(null);
@@ -101,8 +104,8 @@ function Prompt() {
         imageUrl: previewImage,
       };
 
-      // useState 훅을 사용하여 메세지 배열에 새 메세지 추가
-      setMessages((prevMessages) => [...prevMessages, newMessage]);
+      // useStore 훅을 사용하여 메세지 배열에 새 메세지 추가
+      addMessage(newMessage);
 
       // formData에 전달값 세팅
       const formData = new FormData();
@@ -141,7 +144,7 @@ function Prompt() {
         };
 
         // 봇 응답 추가
-        setMessages((prevMessages) => [...prevMessages, botResponse]);
+        addMessage(botResponse);
       } catch (error) {
         console.error("Error sending message:", error);
       } finally {
