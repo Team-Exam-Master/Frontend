@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 
-function History({ historyData }) {
+function History() {
   const [selectedHistoryId, setSelectedHistoryId] = useState(null);
   const [histories, setHistories] = useState([]);
 

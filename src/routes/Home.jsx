@@ -1,9 +1,12 @@
 import React, { useState } from "react";
+import { useLoaderData } from "react-router-dom";
+
 import Prompt from "../components/Prompt";
 import History from "../components/History";
 import styled from "styled-components";
 import Header from "../components/Header";
 import axios from "../axios";
+
 const SidebarContainer = styled.div`
   position: relative;
 `;
