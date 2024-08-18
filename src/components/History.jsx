@@ -1,14 +1,15 @@
 import React, { useState, useEffect } from "react";
-import { useLoaderData } from "react-router-dom";
 
-function History() {
-  const historyData = useLoaderData();
+function History({ historyData }) {
   const [selectedHistoryId, setSelectedHistoryId] = useState(null);
   const [histories, setHistories] = useState([]);
 
   useEffect(() => {
     if (Array.isArray(historyData)) {
       setHistories(historyData);
+    } else {
+      console.error("히스토리목록 없음");
+      setHistories([]);
     }
   }, [historyData]);
 
@@ -42,7 +43,7 @@ function History() {
                 selectedHistoryId === history.historyId ? "font-bold" : ""
               }`}
             >
-              {history.title || `History ${history.historyId}`}
+              {history.title}
             </button>
             <button
               onClick={() => handleDeleteHistory(history.historyId)}
