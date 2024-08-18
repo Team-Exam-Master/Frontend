@@ -53,7 +53,7 @@ const Content = styled.div`
 
 const Home = () => {
   const [isHistoryOpen, setIsHistoryOpen] = useState(false);
-
+  const historyData = useLoaderData();
   // 히스토리 토글 함수
   const toggleHistory = () => {
     setIsHistoryOpen(!isHistoryOpen);
@@ -63,7 +63,7 @@ const Home = () => {
     <div className="flex w-screen h-screen bg-gradient-to-r from-background-start via-gray-800 to-background-end text-white overflow-hidden">
       <SidebarContainer>
         <Sidebar $isOpen={isHistoryOpen}>
-          <History />
+          <History historyData={historyData} />
         </Sidebar>
         <ToggleButton onClick={toggleHistory}>
           <ToggleIcon
