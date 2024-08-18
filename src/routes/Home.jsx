@@ -57,6 +57,7 @@ const Content = styled.div`
 const Home = () => {
   const [isHistoryOpen, setIsHistoryOpen] = useState(false);
   const historyData = useLoaderData();
+
   // 히스토리 토글 함수
   const toggleHistory = () => {
     setIsHistoryOpen(!isHistoryOpen);
