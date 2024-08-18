@@ -3,7 +3,7 @@ import Prompt from "../components/Prompt";
 import History from "../components/History";
 import styled from "styled-components";
 import Header from "../components/Header";
-
+import axios from "../axios";
 const SidebarContainer = styled.div`
   position: relative;
 `;
@@ -91,6 +91,6 @@ const Home = () => {
 
 export default Home;
 
-// export async function loader() {
-//   return await axios.get("https://weasel-backend.kkamji.net/v1/history/list");
-// }
+export async function loader() {
+  return await axios.get("/history/list");
+}
