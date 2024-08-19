@@ -1,6 +1,6 @@
 import { create } from "zustand";
 
-const useStore = create((set) => ({
+const useMessage = create((set) => ({
   messages: [], // 초기 메시지 상태
 
   // 메시지 배열 자체를 바꾸는 함수
@@ -15,4 +15,4 @@ const useStore = create((set) => ({
   removeAllMessage: () => set({ messages: [] }),
 }));
 
-export default useStore;
+export default useMessage;

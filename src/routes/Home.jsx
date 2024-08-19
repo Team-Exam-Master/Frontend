@@ -12,7 +12,7 @@ const SidebarContainer = styled.div`
 `;
 
 const Sidebar = styled.div`
-  width: ${({ $isOpen }) => ($isOpen ? "20vw" : "0")};
+  width: ${({ $isOpen }) => ($isOpen ? "22vw" : "0")};
   transition: width 0.3s;
   overflow: hidden;
 `;
