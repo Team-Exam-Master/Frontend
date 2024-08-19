@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios from "../axios";
 import React, { useState, useEffect } from "react";
 import useStore from "./store"; // zustand store import
 
@@ -52,33 +52,28 @@ function History({ historyData }) {
   };
 
   const handleDeleteHistory = async (historyId) => {
+    console.log(historyId);
+    const response = await axios.delete("history/delete/" + historyId);
     setHistories(
       histories.filter((history) => history.historyId !== historyId)
     );
-    const response = await axios.delete("history/delete/" + historyId);
   };
 
   return (
-    <div className="flex flex-col text-center justify-center m-6">
+    <div className="flex flex-col text-center justify-center">
       <img
         src="/weasel.png"
         alt="Image"
-        className="w-36 h-36 mx-auto rounded-full"
+        className="w-36 h-36 mx-auto rounded-full mt-6"
       />
       <div className="m-4">당신의 척척박사 위즐</div>
       {histories.map((history) => (
         <div
           key={history.historyId}
-          className="flex flex-col m-2 border p-2 rounded justify-between items-center"
+          onClick={() => handleHistoryClick(history.historyId)}
+          className="flex flex-row m-2 p-2 border rounded justify-between items-center"
         >
-          <button
-            onClick={() => handleHistoryClick(history.historyId)}
-            className={`flex-grow text-left ${
-              selectedHistoryId === history.historyId ? "font-bold" : ""
-            }`}
-          >
-            {history.title}
-          </button>
+          <a className="flex-grow text-left">{history.title}</a>
           <button
             onClick={() => handleDeleteHistory(history.historyId)}
             className="ml-2 px-2 py-1 bg-red-500 text-white rounded"
