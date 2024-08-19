@@ -1,20 +1,18 @@
 import { useState, useRef, useEffect } from "react";
 import styled from "styled-components";
 import TextareaAutosize from "react-textarea-autosize";
-import axios from "axios";
+import axios from "../axios";
+import useMessage from "../store/message";
+import useHistory from "../store/history";
 
 const ChatContainer = styled.div`
   display: flex;
   flex-direction: column;
   flex: 1;
-  width: 60%;
+  width: 65%;
   padding: 10px;
   overflow-y: auto;
   border: 1px solid white;
-  @media (max-width: 1024px) {
-    width: 80%;
-    padding: 10px;
-  }
 `;
 
 const InputContainer = styled.div`
@@ -26,10 +24,6 @@ const InputContainer = styled.div`
   text-color: #ffffff;
   height: 6vh;
   border: 1px solid white;
-
-  @media (max-width: 1024px) {
-    width: 100%;
-  }
 `;
 
 const Message = styled.div`
@@ -59,7 +53,16 @@ const StyledTextarea = styled(TextareaAutosize)`
 `;
 
 function Prompt() {
-  const [messages, setMessages] = useState([]);
+  const messages = useMessage((state) => state.messages); // 메시지 배열을 가져옴
+
+  const selectedHistoryId = useHistory((state) => state.selectedHistoryId);
+  const setSelectedHistoryId = useHistory(
+    (state) => state.setSelectedHistoryId
+  );
+
+  const addHistory = useHistory((state) => state.addHistory);
+  const addMessage = useMessage((state) => state.addMessage);
+
   const [input, setInput] = useState("");
   const [previewImage, setPreviewImage] = useState(null);
   const fileInputRef = useRef(null);
@@ -101,8 +104,8 @@ function Prompt() {
         imageUrl: previewImage,
       };
 
-      // useState 훅을 사용하여 메세지 배열에 새 메세지 추가
-      setMessages((prevMessages) => [...prevMessages, newMessage]);
+      // useMessage 훅을 사용하여 메세지 배열에 새 메세지 추가
+      addMessage(newMessage);
 
       // formData에 전달값 세팅
       const formData = new FormData();
@@ -126,26 +129,33 @@ function Prompt() {
 
       try {
         // 서버에 메시지 전달
-        const response = await axios.post(
-          "https://weasel-backend.kkamji.net/v1/prompt/add",
-          formData,
-          {
-            headers: {
-              "Content-Type":
-                "multipart/form-data; boundary=<calculated when request is sent>",
-            },
-          }
-        );
+        const url =
+          selectedHistoryId === ""
+            ? "/prompt/add"
+            : `/prompt/add?historyId=${selectedHistoryId}`;
+
+        const response = await axios.post(url, formData, {
+          headers: {
+            "Content-Type":
+              "multipart/form-data; boundary=<calculated when request is sent>",
+          },
+        });
+        const resData = response.data;
+
+        if (selectedHistoryId === "") {
+          addHistory(resData.historyDTO);
+          setSelectedHistoryId(resData.historyDTO.historyId);
+        }
 
         // 응답값 가공
         const botResponse = {
           type: "bot",
-          content: response.data.answer,
+          content: resData.answer,
           imageUrl: null,
         };
 
         // 봇 응답 추가
-        setMessages((prevMessages) => [...prevMessages, botResponse]);
+        addMessage(botResponse);
       } catch (error) {
         console.error("Error sending message:", error);
       } finally {
@@ -196,7 +206,8 @@ function Prompt() {
         ))}
         <div ref={messagesEndRef} />
       </ChatContainer>
-      <form onSubmit={sendMessage} className="w-4/5 lg:w-3/5 mb-10">
+
+      <form onSubmit={sendMessage} className="mb-10" style={{ width: "65%" }}>
         <InputContainer style={{ height: "auto" }}>
           {/* 이미지 선택버튼 */}
           {/* 아이콘 출처: heroicons.com */}

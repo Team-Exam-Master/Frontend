@@ -2,8 +2,8 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import "./index.css";
-// , { loader as historyLoader }
-import Home from "./routes/Home";
+//
+import Home, { loader as historyLoader } from "./routes/Home";
 import Start from "./routes/Start";
 import Auth from "./routes/Auth";
 import AuthProvider from "./components/AuthContext";
@@ -16,7 +16,7 @@ const router = createBrowserRouter([
   {
     path: "/home",
     element: <Home />, // 메인 페이지
-    // loader: historyLoader,
+    loader: historyLoader,
   },
 
   {

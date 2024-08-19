@@ -1,15 +1,18 @@
 import React, { useState } from "react";
+import { useLoaderData } from "react-router-dom";
+
 import Prompt from "../components/Prompt";
 import History from "../components/History";
 import styled from "styled-components";
 import Header from "../components/Header";
+import axios from "../axios";
 
 const SidebarContainer = styled.div`
   position: relative;
 `;
 
 const Sidebar = styled.div`
-  width: ${({ $isOpen }) => ($isOpen ? "20vw" : "0")};
+  width: ${({ $isOpen }) => ($isOpen ? "22vw" : "0")};
   transition: width 0.3s;
   overflow: hidden;
 `;
@@ -53,6 +56,7 @@ const Content = styled.div`
 
 const Home = () => {
   const [isHistoryOpen, setIsHistoryOpen] = useState(false);
+  const historyData = useLoaderData();
 
   // 히스토리 토글 함수
   const toggleHistory = () => {
@@ -63,7 +67,7 @@ const Home = () => {
     <div className="flex w-screen h-screen bg-gradient-to-r from-background-start via-gray-800 to-background-end text-white overflow-hidden">
       <SidebarContainer>
         <Sidebar $isOpen={isHistoryOpen}>
-          <History />
+          <History historyData={historyData} />
         </Sidebar>
         <ToggleButton onClick={toggleHistory}>
           <ToggleIcon
@@ -91,6 +95,12 @@ const Home = () => {
 
 export default Home;
 
-// export async function loader() {
-//   return await axios.get("https://weasel-backend.kkamji.net/v1/history/list");
-// }
+export async function loader() {
+  try {
+    const response = await axios.get("/history/list");
+    return response.data;
+  } catch (error) {
+    console.error("Loader error:", error);
+    return [];
+  }
+}

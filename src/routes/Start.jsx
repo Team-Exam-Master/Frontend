@@ -38,10 +38,6 @@ function Start() {
       <StyledButton as={Link} to="/auth">
         Get Started
       </StyledButton>
-
-      <button>
-        <Link to="/home">home</Link>
-      </button>
     </main>
   );
 }
