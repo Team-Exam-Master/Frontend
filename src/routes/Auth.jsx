@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "../axios";
-// import { useCookies } from "react-cookie";
+import axios from "axios";
 import { FaArrowLeft } from "react-icons/fa";
 import "../index.css";
 
@@ -9,18 +8,20 @@ export const useAuth = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [profilePhoto, setProfilePhoto] = useState(null);
-  const [photoPreview, setPhotoPreview] = useState(null);
+  const [photoPreview, setPhotoPreview] = useState(null); // 프로필 사진 미리보기 url 상태 관리
   const [isLogin, setIsLogin] = useState(true);
 
+  // 로그인/회원가입 모드 전환
   const toggleAuthMode = () => setIsLogin(!isLogin);
 
+  // 파일이 변경될때 호출
   const handleFileChange = (file) => {
     setProfilePhoto(file);
     const reader = new FileReader();
     reader.onloadend = () => {
-      setPhotoPreview(reader.result);
+      setPhotoPreview(reader.result); // 파일의 미리보기 URL을 photoPreview에 저장
     };
-    reader.readAsDataURL(file);
+    reader.readAsDataURL(file); // 파일을 Data URL로 읽음
   };
 
   return {
@@ -49,15 +50,9 @@ const Auth = () => {
     handleFileChange,
   } = useAuth();
 
-  // const [cookies, setCookie] = useCookies([
-  //   "authToken",
-  //   "email",
-  //   "profilePhoto",
-  //   "history",
-  // ]);
-
   const navigate = useNavigate();
 
+  // 이메일 유효성 검사
   const isValidEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 
   const handleAuth = async (e) => {
@@ -73,62 +68,69 @@ const Auth = () => {
       return;
     }
 
-    if (isLogin) {
-      try {
-        const response = await axios.post("/login", { email, password });
+    try {
+      let response;
 
-        if (response.status === 200) {
-          // 서버 응답에서 올바른 필드 접근
-          const { resultCode, msg, profilePhoto } = response.data;
+      if (isLogin) {
+        // 로그인 요청 처리
+        response = await axios.post(
+          "https://weasel-backend.kkamji.net/v1/login",
+          { email, password },
+          { withCredentials: true } // 쿠키를 포함하여 요청을 보냄
+        );
 
-          if (resultCode === 1) {
-            // resultCode가 1이면 성공으로 처리
+        // 응답 데이터 출력
+        console.log("로그인 응답 데이터:", response.data);
 
-            navigate("/home");
-          } else {
-            alert(msg || "로그인 실패");
-          }
+        // 로그인 성공 시 처리
+        if (response.status === 200 && response.data.resultCode === 1) {
+          alert("로그인 성공");
+          navigate("/home");
         } else {
-          alert("로그인 실패");
+          alert("로그인 실패: " + response.data.msg);
         }
-      } catch (error) {
-        console.error("로그인 중 오류 발생:", error);
-        alert("서버에 오류가 발생했습니다. 다시 시도해 주세요.");
-      }
-    } else {
-      try {
-        const data = {
-          email: email,
-          password: password,
-        };
-
+      } else {
+        // 회원가입 요청 처리
+        const data = { email, password };
         const formData = new FormData();
-        formData.append("memberDTOstr", JSON.stringify(data));
+        formData.append("memberDTOstr", JSON.stringify(data)); // JSON 문자열로 변환하여 전송
 
         if (profilePhoto) {
           formData.append("file", profilePhoto);
         }
 
-        const response = await axios.post(
+        response = await axios.post(
           "https://weasel-backend.kkamji.net/v1/member/join",
           formData,
           {
             headers: {
               "Content-Type": "multipart/form-data",
             },
+            withCredentials: true, 
           }
         );
 
         if (response.status === 200) {
-          alert("회원가입 성공");
-          toggleAuthMode();
+          const { resultCode } = response.data;
+
+          if (resultCode === 1) {
+            alert("회원가입 성공");
+            navigate("/home");
+          } else if (resultCode === -1) {
+            alert("이미 가입된 회원입니다.");
+          } else {
+            alert("회원가입 실패: " + response.data.msg);
+          }
         } else {
           alert("회원가입 실패");
         }
-      } catch (error) {
-        console.error("회원가입 중 오류 발생:", error);
-        alert("서버에 오류가 발생했습니다. 다시 시도해 주세요.");
       }
+    } catch (error) {
+      console.error("인증 중 오류 발생:", error);
+      alert(
+        error.response?.data?.message ||
+          "서버에 오류가 발생했습니다. 다시 시도해 주세요."
+      );
     }
   };
 
@@ -140,6 +142,7 @@ const Auth = () => {
       >
         <FaArrowLeft size={20} />
       </button>
+
       <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
         <h1 className="text-2xl font-bold mb-4 text-center">
           {isLogin ? "Login" : "Sign Up"}
