@@ -137,7 +137,7 @@ const Auth = () => {
 
           if (resultCode === 1) {
             alert("회원가입 성공");
-            navigate("/home");
+            toggleAuthMode();
           } else if (resultCode === -1) {
             alert("이미 가입된 회원입니다.");
           } else {
