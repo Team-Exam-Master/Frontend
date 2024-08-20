@@ -74,7 +74,7 @@ const EditProfileModal = ({ onClose, onUpdate }) => {
 
     const formData = new FormData();
 
-    if (profilePhoto) formData.append("profilePhoto", profilePhoto);
+    if (profilePhoto) formData.append("file", profilePhoto);
     formData.append("updatedMemberDTOstr", data);
 
     try {
