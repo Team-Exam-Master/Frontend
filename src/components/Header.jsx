@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
+import axios from "../axios";
 import EditProfileModal from "./EditProfileModal";
 
 // 사용자 프로필의 초기 상태
@@ -21,10 +21,7 @@ const Header = () => {
   useEffect(() => {
     const fetchUserProfile = async () => {
       try {
-        const { status, data } = await axios.get(
-          "https://weasel-backend.kkamji.net/v1/member/view",
-          { withCredentials: true } // 세션 쿠키를 포함하여 요청을 보냄
-        );
+        const { status, data } = await axios.get("/member/view");
 
         console.log("Fetched user profile data:", data);
         console.log("Email:", data.email);
@@ -61,10 +58,7 @@ const Header = () => {
 
   const handleLogout = async () => {
     try {
-      await axios.get(
-        "https://weasel-backend.kkamji.net/v1/logout",
-        { withCredentials: true } // 세션 쿠키를 포함하여 요청을 보냄
-      );
+      await axios.get("/logout");
       alert("로그아웃 되었습니다.");
     } catch (error) {
       console.error("로그아웃 중 오류 발생:", error);
@@ -78,10 +72,7 @@ const Header = () => {
 
   const handleUpdate = async () => {
     try {
-      const { status, data } = await axios.get(
-        "https://weasel-backend.kkamji.net/v1/member/view",
-        { withCredentials: true } 
-      );
+      const { status, data } = await axios.get("/member/view");
 
       console.log("Profile update data:", data);
       console.log("Email:", data.email);

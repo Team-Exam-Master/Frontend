@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
+import axios from "../axios";
 import { FaArrowLeft } from "react-icons/fa";
 import "../index.css";
 
@@ -73,11 +73,7 @@ const Auth = () => {
 
       if (isLogin) {
         // 로그인 요청 처리
-        response = await axios.post(
-          "https://weasel-backend.kkamji.net/v1/login",
-          { email, password },
-          { withCredentials: true } // 쿠키를 포함하여 요청을 보냄
-        );
+        response = await axios.post("/login", { email, password });
 
         // 응답 데이터 출력
         console.log("로그인 응답 데이터:", response.data);
@@ -99,16 +95,11 @@ const Auth = () => {
           formData.append("file", profilePhoto);
         }
 
-        response = await axios.post(
-          "https://weasel-backend.kkamji.net/v1/member/join",
-          formData,
-          {
-            headers: {
-              "Content-Type": "multipart/form-data",
-            },
-            withCredentials: true, 
-          }
-        );
+        response = await axios.post("/member/join", formData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        });
 
         if (response.status === 200) {
           const { resultCode } = response.data;

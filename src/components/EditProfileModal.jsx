@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
+import axios from "../axios";
 import { useNavigate } from "react-router-dom";
 
 const EditProfileModal = ({ onClose, onUpdate }) => {
@@ -15,10 +15,7 @@ const EditProfileModal = ({ onClose, onUpdate }) => {
     const fetchProfileData = async () => {
       try {
         // 사용자 프로필 데이터를 서버에서 가져옴
-        const response = await axios.get(
-          "https://weasel-backend.kkamji.net/v1/member/view",
-          { withCredentials: true } 
-        );
+        const response = await axios.get("/member/view");
 
         const userProfile = response.data;
         setEmail(userProfile.email);
@@ -29,7 +26,7 @@ const EditProfileModal = ({ onClose, onUpdate }) => {
 
         if (error.response && error.response.status === 401) {
           alert("인증에 실패했습니다. 다시 로그인해 주세요.");
-         // navigate("/auth");
+          // navigate("/auth");
         } else {
           alert(
             "프로필 데이터를 가져오는 데 실패했습니다. 서버 오류가 발생했습니다."
@@ -65,16 +62,11 @@ const EditProfileModal = ({ onClose, onUpdate }) => {
       setIsSubmitting(true);
 
       // FormData 데이터를 서버에 전송
-      const { data } = await axios.patch(
-        "https://weasel-backend.kkamji.net/v1/member/update",
-        formData,
-        {
-          withCredentials: true,
-          headers: {
-            "Content-Type": "multipart/form-data", // FormData 전송을 위해 필요
-          },
-        }
-      );
+      const { data } = await axios.patch("/member/update", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data", // FormData 전송을 위해 필요
+        },
+      });
 
       if (data) {
         setPhotoPreview(data.photoUrl); // 서버에서 반환된 새로운 데이터로 프로필 사진 갱신
