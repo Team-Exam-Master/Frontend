@@ -69,7 +69,7 @@ const EditProfileModal = ({ onClose, onUpdate }) => {
     const formData = new FormData();
 
     if (profilePhoto) formData.append("profilePhoto", profilePhoto);
-    if (newPassword) formData.append("updateMemberDTOstr", data);
+    if (newPassword) formData.append("updatedMemberDTOstr", data);
 
     try {
       setIsSubmitting(true);
