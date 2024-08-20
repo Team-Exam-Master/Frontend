@@ -65,12 +65,11 @@ const EditProfileModal = ({ onClose, onUpdate }) => {
   };
 
   const handleSaveChanges = async () => {
-    const data = { password };
+    const data = { password: newPassword };
     const formData = new FormData();
 
     if (profilePhoto) formData.append("profilePhoto", profilePhoto);
-    if (newPassword)
-      formData.append("updateMemberDTOstr", JSON.stringify(data));
+    if (newPassword) formData.append("updateMemberDTOstr", data);
 
     try {
       setIsSubmitting(true);
