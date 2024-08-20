@@ -42,7 +42,7 @@ const EditProfileModal = ({ onClose, onUpdate }) => {
     };
 
     fetchProfileData();
-  }, [navigate]);
+  }, []);
 
   const handleFileChange = (e) => {
     const file = e.target.files[0];
@@ -65,9 +65,12 @@ const EditProfileModal = ({ onClose, onUpdate }) => {
   };
 
   const handleSaveChanges = async () => {
+    const data = { password };
     const formData = new FormData();
-    if (newPassword) formData.append("password", newPassword);
+
     if (profilePhoto) formData.append("profilePhoto", profilePhoto);
+    if (newPassword)
+      formData.append("updateMemberDTOstr", JSON.stringify(data));
 
     try {
       setIsSubmitting(true);
