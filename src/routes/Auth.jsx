@@ -70,20 +70,51 @@ const Auth = () => {
 
     try {
       let response;
+      // json 형식
+      // if (isLogin) {
+      //   // 로그인 요청 처리
+      //   response = await axios.post("/login", { email, password });
 
+      //   // 응답 데이터 출력
+      //   console.log("로그인 응답 데이터:", response.data);
+
+      //   // 로그인 성공 시 처리
+      //   if (response.status === 200 && response.data.resultCode === 1) {
+      //     alert("로그인 성공");
+      //     navigate("/home");
+      //   } else {
+      //     alert("로그인 실패: " + response.data.msg);
+      //   }
+      // }
+
+      // formData형식
       if (isLogin) {
-        // 로그인 요청 처리
-        response = await axios.post("/login", { email, password });
+        // FormData 객체 생성
+        const formData = new FormData();
+        formData.append("email", email);
+        formData.append("password", password);
 
-        // 응답 데이터 출력
-        console.log("로그인 응답 데이터:", response.data);
+        try {
+          // 로그인 요청 처리 (FormData로 전송)
+          const response = await axios.post("/login", formData, {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          });
 
-        // 로그인 성공 시 처리
-        if (response.status === 200 && response.data.resultCode === 1) {
-          alert("로그인 성공");
-          navigate("/home");
-        } else {
-          alert("로그인 실패: " + response.data.msg);
+          // 응답 데이터 출력
+          console.log("로그인 응답 데이터:", response.data);
+
+          // 로그인 성공 시 처리
+          if (response.status === 200 && response.data.resultCode === 1) {
+            alert("로그인 성공");
+            navigate("/home");
+          } else {
+            alert("로그인 실패: " + response.data.msg);
+          }
+        } catch (error) {
+          console.error("로그인 요청 중 오류 발생:", error);
+          alert("로그인 요청 중 오류가 발생했습니다.");
         }
       } else {
         // 회원가입 요청 처리
