@@ -25,7 +25,7 @@ const Header = () => {
 
         console.log("Fetched user profile data:", data);
         console.log("Email:", data.email);
-        console.log("Profile Photo URL:", data.photoUrl);
+        // console.log("Profile Photo URL:", data.photoUrl);
 
         if (status === 200 && data) {
           setUserProfile(data);
@@ -76,7 +76,6 @@ const Header = () => {
 
       console.log("Profile update data:", data);
       console.log("Email:", data.email);
-      console.log("Profile Photo URL:", data.photoUrl);
 
       if (status === 200 && data) {
         setUserProfile(data); // 서버에서 받은 데이터로 사용자 프로필을 업데이트
@@ -156,18 +155,20 @@ const Header = () => {
           <div
             className="w-8 h-8 rounded-full"
             style={{
-              backgroundImage: userProfile.photoUrl
-                ? `url(${userProfile.photoUrl})`
-                : `url(/default.png)`,
-              backgroundColor: userProfile.photoUrl ? "transparent" : "#d1d5db",
+              backgroundImage: userProfile.profilePhoto
+                ? `url('https://weasel-images.s3.amazonaws.com/${userProfile.profilePhoto}')`
+                : `url('/default.png')`,
+              backgroundColor: userProfile.profilePhoto
+                ? "transparent"
+                : "#d1d5db",
               backgroundSize: "cover",
               backgroundPosition: "center",
             }}
           />
         </button>
+
         {renderDropdownMenu()}
       </div>
-
       {isModalOpen && (
         <EditProfileModal
           userProfile={userProfile}
