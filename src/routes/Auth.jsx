@@ -31,10 +31,12 @@ export const useAuth = () => {
     password,
     profilePhoto,
     photoPreview,
+    isSubmitting,
     setEmail,
     setPassword,
     toggleAuthMode,
     handleFileChange,
+    setIsSubmitting,
   };
 };
 
@@ -45,10 +47,12 @@ const Auth = () => {
     password,
     profilePhoto,
     photoPreview,
+    isSubmitting,
     setEmail,
     setPassword,
     toggleAuthMode,
     handleFileChange,
+    setIsSubmitting,
   } = useAuth();
 
   const navigate = useNavigate();
@@ -69,7 +73,7 @@ const Auth = () => {
       return;
     }
 
-    setIsSubmitting(true);  // 서버 요청이 시작될 때 버튼을 비활성화하기 위한 상태 설정
+    setIsSubmitting(true); // 서버 요청이 시작될 때 버튼을 비활성화하기 위한 상태 설정
 
     try {
       let response;
@@ -106,7 +110,7 @@ const Auth = () => {
           });
 
           // 응답 데이터 출력
-         // console.log("로그인 응답 데이터:", response.data);
+          // console.log("로그인 응답 데이터:", response.data);
 
           // 로그인 성공 시 처리
           if (response.status === 200) {
@@ -114,7 +118,7 @@ const Auth = () => {
               alert("로그인 성공");
               navigate("/home");
             } else if (response.data.resultCode === -1) {
-              alert("아이디나 비밀번호가 틀렸습니다."); 
+              alert("아이디나 비밀번호가 틀렸습니다.");
             } else {
               alert("로그인 실패: " + response.data.msg);
             }
@@ -123,7 +127,7 @@ const Auth = () => {
           // console.error("로그인 요청 중 오류 발생:", error);
           alert("로그인 요청 중 오류가 발생했습니다.");
         }
-      }else {
+      } else {
         // 회원가입 요청 처리
         const data = { email, password };
         const formData = new FormData();
@@ -155,12 +159,12 @@ const Auth = () => {
         }
       }
     } catch (error) {
-     // console.error("인증 중 오류 발생:", error);
+      // console.error("인증 중 오류 발생:", error);
       alert(
         error.response?.data?.message ||
           "서버에 오류가 발생했습니다. 다시 시도해 주세요."
       );
-    }finally{
+    } finally {
       setIsSubmitting(false); // 서버 요청이 완료되면 버튼 활성화
     }
   };
@@ -226,7 +230,7 @@ const Auth = () => {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             className="border rounded-lg p-2"
-            disabled={isSubmitting} 
+            disabled={isSubmitting}
           />
           <input
             type="password"
@@ -234,12 +238,12 @@ const Auth = () => {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             className="border rounded-lg p-2"
-            disabled={isSubmitting} 
+            disabled={isSubmitting}
           />
           <button
             type="submit"
             className="bg-gray-500 text-white font-bold py-2 rounded-lg hover:bg-gray-600 transition"
-            disabled={isSubmitting} 
+            disabled={isSubmitting}
           >
             {isSubmitting ? "Processing..." : isLogin ? "Login" : "Sign Up"}
           </button>
