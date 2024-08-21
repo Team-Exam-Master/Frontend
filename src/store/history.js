@@ -9,7 +9,7 @@ const useHistory = create((set) => ({
 
   addHistory: (newHistory) =>
     set((state) => ({
-      histories: [...state.histories, newHistory],
+      histories: [newHistory, ...state.histories],
     })),
 
   setHistories: (newHistories) => set({ histories: newHistories }),
