@@ -23,8 +23,8 @@ const Header = () => {
       try {
         const { status, data } = await axios.get("/member/view");
 
-       // console.log("Fetched user profile data:", data);
-       // console.log("Email:", data.email);
+        // console.log("Fetched user profile data:", data);
+        // console.log("Email:", data.email);
         // console.log("Profile Photo URL:", data.photoUrl);
 
         if (status === 200 && data) {
@@ -34,7 +34,7 @@ const Header = () => {
       } catch (error) {
         if (error.response && error.response.status === 401) {
           //console.error("인증되지 않은 사용자입니다. 다시 로그인해 주세요.");
-          alert("인증되지 않은 사용자입니다. 다시 로그인해 주세요.")
+          alert("인증되지 않은 사용자입니다. 다시 로그인해 주세요.");
           navigate("/auth");
         } else {
           //console.error("프로필 데이터를 가져오는 중 오류 발생:", error);
@@ -62,7 +62,7 @@ const Header = () => {
       await axios.get("/logout");
       alert("로그아웃 되었습니다.");
     } catch (error) {
-     // console.error("로그아웃 중 오류 발생:", error);
+      // console.error("로그아웃 중 오류 발생:", error);
       alert("로그아웃에 실패했습니다.");
     } finally {
       setIsLoggedIn(false); // 로그인 상태를 해제
@@ -70,20 +70,20 @@ const Header = () => {
       navigate("/auth");
     }
   };
-  
 
   const handleUpdate = async () => {
     try {
       const { status, data } = await axios.get("/member/view");
 
-     // console.log("Profile update data:", data);
-     // console.log("Email:", data.email);
-
+      // console.log("Profile update data:", data);
+      // console.log("Email:", data.email);
+     // console.log("Updated profile data:", data); // API 응답 데이터 확인
       if (status === 200 && data) {
         setUserProfile(data); // 서버에서 받은 데이터로 사용자 프로필을 업데이트
+       // console.log("User profile updated:", data); // 상태 업데이트 확인
       }
     } catch (error) {
-     // console.error("프로필 갱신 중 오류 발생:", error);
+      // console.error("프로필 갱신 중 오류 발생:", error);
     }
   };
 
