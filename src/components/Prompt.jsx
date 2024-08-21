@@ -62,7 +62,9 @@ function Prompt() {
 
   const addHistory = useHistory((state) => state.addHistory);
   const addMessage = useMessage((state) => state.addMessage);
-
+  const updateMessageContent = useMessage(
+    (state) => state.updateMessageContent
+  );
   const [input, setInput] = useState("");
   const [previewImage, setPreviewImage] = useState(null);
   const fileInputRef = useRef(null);
@@ -140,28 +142,49 @@ function Prompt() {
               "multipart/form-data; boundary=<calculated when request is sent>",
           },
         });
-        const resData = response.data;
 
         if (selectedHistoryId === "") {
-          addHistory(resData.historyDTO);
-          setSelectedHistoryId(resData.historyDTO.historyId);
+          addHistory(response.data.historyDTO);
+          setSelectedHistoryId(response.data.historyDTO.historyId);
         }
 
-        // 응답값 가공
+        // 봇 응답을 하나씩 추가하는 로직
         const botResponse = {
+          id: response.data.promptId,
           type: "bot",
-          content: resData.answer,
+          content: "",
           imageUrl: null,
         };
 
-        // 봇 응답 추가
-        addMessage(botResponse);
+        renderBotResponse(
+          response.data.answer,
+          botResponse,
+          response.data.promptId
+        );
       } catch (error) {
         console.error("Error sending message:", error);
       } finally {
-        setIsAxiosLoading(false); // 로딩 상태 해제
+        setIsAxiosLoading(false);
       }
     }
+  };
+
+  const renderBotResponse = (text, botResponse, id) => {
+    let currentIndex = 0;
+
+    // 빈 봇 메시지를 배열에 추가
+    addMessage({ ...botResponse, id });
+
+    const interval = setInterval(() => {
+      if (currentIndex < text.length) {
+        // 봇 메시지에 한 글자씩 추가
+        botResponse.content += text[currentIndex];
+        updateMessageContent(id, botResponse.content);
+        currentIndex++;
+      } else {
+        clearInterval(interval);
+      }
+    }, 10);
   };
 
   // 이미지 업로드 함수
