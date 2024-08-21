@@ -2,7 +2,7 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import "./index.css";
-//
+
 import Home, { loader as historyLoader } from "./routes/Home";
 import Start from "./routes/Start";
 import Auth from "./routes/Auth";
