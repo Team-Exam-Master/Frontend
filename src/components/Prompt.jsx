@@ -4,6 +4,7 @@ import TextareaAutosize from "react-textarea-autosize";
 import axios from "../axios";
 import useMessage from "../store/message";
 import useHistory from "../store/history";
+import WeaselIcon from "./WeaselIcon";
 
 const ChatContainer = styled.div`
   display: flex;
@@ -12,7 +13,6 @@ const ChatContainer = styled.div`
   width: 65%;
   padding: 10px;
   overflow-y: auto;
-  border: 1px solid white;
 `;
 
 const InputContainer = styled.div`
@@ -20,10 +20,9 @@ const InputContainer = styled.div`
   align-items: center;
   border-radius: 10px;
   padding: 5px;
-  background-color: #484254;
+  background-color: #5a5668;
   text-color: #ffffff;
   height: 6vh;
-  border: 1px solid white;
 `;
 
 const Message = styled.div`
@@ -37,19 +36,26 @@ const Message = styled.div`
   max-width: ${({ type }) => (type === "user" ? "70%" : "100%")};
   width: ${({ type }) => (type === "user" ? "auto" : "100%")};
   align-self: ${({ type }) => (type === "user" ? "flex-end" : "flex-start")};
-  background-color: ${({ type }) => (type === "user" ? "#2F2B35" : "#484254")};
+  background-color: ${({ type }) => (type === "user" ? "#3D3A45" : "#484254")};
 `;
 
 const StyledTextarea = styled(TextareaAutosize)`
   flex-grow: 1;
   border: none;
   outline: none;
-  background-color: #484254;
+  background-color: #5a5668;
   color: #ffffff;
   resize: none;
   overflow-y: auto;
   min-height: 24px;
   max-height: 150px;
+`;
+
+const WarningMessage = styled.div`
+  text-align: center;
+  color: #ef4444;
+  font-weight: bold;
+  margin-top: 0.5rem;
 `;
 
 function Prompt() {
@@ -70,9 +76,17 @@ function Prompt() {
   const fileInputRef = useRef(null);
   const messagesEndRef = useRef(null);
   const [isAxiosLoading, setIsAxiosLoading] = useState(false);
+  const [FormIsValid, setFormIsVaild] = useState(true);
 
   const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    // messagesEndRef가 현재 스크롤 위치를 잡기 위한 ref
+    if (messagesEndRef.current) {
+      // 컨테이너와 스크롤 바의 전체 높이를 비교하여 스크롤 필요 여부를 결정합니다.
+      const container = messagesEndRef.current.parentNode;
+      if (container.scrollHeight > container.clientHeight) {
+        messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
+      }
+    }
   };
 
   const handleInputChange = (e) => {
@@ -97,75 +111,79 @@ function Prompt() {
     e.preventDefault(); // 폼 제출 시 페이지 새로고침 방지
 
     // input안에 텍스트 또는 previewImage가 존재할때 newMessage를 set
-    if (input.trim() !== "" || previewImage) {
-      setIsAxiosLoading(true);
+    if (input.trim === "" || !previewImage) {
+      setFormIsVaild(false);
+      return;
+    }
 
-      const newMessage = {
-        type: "user",
-        content: input,
-        imageUrl: previewImage,
-      };
+    setIsAxiosLoading(true);
+    setFormIsVaild(true);
 
-      // useMessage 훅을 사용하여 메세지 배열에 새 메세지 추가
-      addMessage(newMessage);
+    const newMessage = {
+      type: "user",
+      content: input,
+      imageUrl: previewImage,
+    };
 
-      // formData에 전달값 세팅
-      const formData = new FormData();
-      const promptStr = JSON.stringify({
-        prompt: input,
+    // useMessage 훅을 사용하여 메세지 배열에 새 메세지 추가
+    addMessage(newMessage);
+
+    // formData에 전달값 세팅
+    const formData = new FormData();
+    const promptStr = JSON.stringify({
+      prompt: input,
+    });
+
+    formData.append("promptDTO", promptStr);
+
+    const file = fileInputRef.current?.files[0];
+    if (file) {
+      formData.append("file", file);
+    }
+
+    // 입력값 초기화
+    setInput("");
+    setPreviewImage(null);
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
+    }
+
+    try {
+      // 서버에 메시지 전달
+      const url =
+        selectedHistoryId === ""
+          ? "/prompt/add"
+          : `/prompt/add?historyId=${selectedHistoryId}`;
+
+      const response = await axios.post(url, formData, {
+        headers: {
+          "Content-Type":
+            "multipart/form-data; boundary=<calculated when request is sent>",
+        },
       });
 
-      formData.append("promptDTO", promptStr);
-
-      const file = fileInputRef.current?.files[0];
-      if (file) {
-        formData.append("file", file);
+      if (selectedHistoryId === "") {
+        addHistory(response.data.historyDTO);
+        setSelectedHistoryId(response.data.historyDTO.historyId);
       }
 
-      // 입력값 초기화
-      setInput("");
-      setPreviewImage(null);
-      if (fileInputRef.current) {
-        fileInputRef.current.value = "";
-      }
+      // 봇 응답을 하나씩 추가하는 로직
+      const botResponse = {
+        id: response.data.promptId,
+        type: "bot",
+        content: "",
+        imageUrl: null,
+      };
 
-      try {
-        // 서버에 메시지 전달
-        const url =
-          selectedHistoryId === ""
-            ? "/prompt/add"
-            : `/prompt/add?historyId=${selectedHistoryId}`;
-
-        const response = await axios.post(url, formData, {
-          headers: {
-            "Content-Type":
-              "multipart/form-data; boundary=<calculated when request is sent>",
-          },
-        });
-
-        if (selectedHistoryId === "") {
-          addHistory(response.data.historyDTO);
-          setSelectedHistoryId(response.data.historyDTO.historyId);
-        }
-
-        // 봇 응답을 하나씩 추가하는 로직
-        const botResponse = {
-          id: response.data.promptId,
-          type: "bot",
-          content: "",
-          imageUrl: null,
-        };
-
-        renderBotResponse(
-          response.data.answer,
-          botResponse,
-          response.data.promptId
-        );
-      } catch (error) {
-        console.error("Error sending message:", error);
-      } finally {
-        setIsAxiosLoading(false);
-      }
+      renderBotResponse(
+        response.data.answer,
+        botResponse,
+        response.data.promptId
+      );
+    } catch (error) {
+      console.error("Error sending message:", error);
+    } finally {
+      setIsAxiosLoading(false);
     }
   };
 
@@ -175,16 +193,19 @@ function Prompt() {
     // 빈 봇 메시지를 배열에 추가
     addMessage({ ...botResponse, id });
 
-    const interval = setInterval(() => {
+    const updateContent = () => {
       if (currentIndex < text.length) {
         // 봇 메시지에 한 글자씩 추가
-        botResponse.content += text[currentIndex];
-        updateMessageContent(id, botResponse.content);
+        const updatedContent = botResponse.content + text[currentIndex];
+        updateMessageContent(id, updatedContent);
+        botResponse.content = updatedContent;
         currentIndex++;
-      } else {
-        clearInterval(interval);
+        requestAnimationFrame(updateContent);
       }
-    }, 10);
+    };
+
+    updateContent();
+    scrollToBottom();
   };
 
   // 이미지 업로드 함수
@@ -211,22 +232,28 @@ function Prompt() {
     <div className="flex flex-col items-center flex-grow">
       {/* 채팅 메세지 목록 */}
       <ChatContainer>
+        {messages.length === 0 && (
+          <div className="flex flex-col justify-center items-center m-auto">
+            <WeaselIcon className="w-36 h-36" />
+          </div>
+        )}
         {/* map 함수를 사용하여 메세지 배열 전체를 순회하여 렌더링 */}
-        {messages.map((msg, index) => (
-          <Message key={index} type={msg.type}>
-            {/* 조건부 렌더링: && 연산자로 msg.imageUrl이 존재(!null)할때만 해당 소스의 이미지를 렌더링함 */}
-            {msg.imageUrl && (
-              <img
-                src={msg.imageUrl}
-                alt="User upload"
-                className="rounded h-80"
-              />
-            )}
-            {msg.content && (
-              <p style={{ whiteSpace: "pre-wrap" }}>{msg.content}</p>
-            )}
-          </Message>
-        ))}
+        {messages.length !== 0 &&
+          messages.map((msg, index) => (
+            <Message key={index} type={msg.type}>
+              {/* 조건부 렌더링: && 연산자로 msg.imageUrl이 존재(!null)할때만 해당 소스의 이미지를 렌더링함 */}
+              {msg.imageUrl && (
+                <img
+                  src={msg.imageUrl}
+                  alt="User upload"
+                  className="rounded h-80"
+                />
+              )}
+              {msg.content && (
+                <p style={{ whiteSpace: "pre-wrap" }}>{msg.content}</p>
+              )}
+            </Message>
+          ))}
         <div ref={messagesEndRef} />
       </ChatContainer>
 
@@ -240,7 +267,7 @@ function Prompt() {
             viewBox="0 0 24 24"
             strokeWidth="1.5"
             stroke="currentColor"
-            className="size-8 mx-2 cursor-pointer"
+            className="size-8 mx-2 cursor-pointer hover:scale-110 transition-all duration-300 ease-in-out"
             onClick={() => {
               fileInputRef.current.click();
             }}
@@ -260,7 +287,11 @@ function Prompt() {
           )}
           {/* 이미지 제거 버튼 */}
           {previewImage && (
-            <button type="button" className="ml-1" onClick={removePreviewImage}>
+            <button
+              type="button"
+              className="ml-1 mr-2 hover:text-red-500 hover:scale-110 transition-all duration-200 ease-in-out"
+              onClick={removePreviewImage}
+            >
               X
             </button>
           )}
@@ -280,7 +311,7 @@ function Prompt() {
                 viewBox="0 0 24 24"
                 strokeWidth="1.5"
                 stroke="currentColor"
-                className="size-8 mx-2 cursor-pointer"
+                className="size-8 mx-2 cursor-pointer hover:scale-110 transition-all duration-300 ease-in-out"
               >
                 <path
                   strokeLinecap="round"
@@ -290,15 +321,19 @@ function Prompt() {
               </svg>
             </button>
           )}
+
           {isAxiosLoading && <img src="/spinner.gif" className="size-10" />}
         </InputContainer>
+        {!FormIsValid && (
+          <WarningMessage>메세지와 이미지 모두 입력해주세요.</WarningMessage>
+        )}
+        <input
+          type="file"
+          onChange={handleImageUpload}
+          className="mb-2 hidden"
+          ref={fileInputRef}
+        />
       </form>
-      <input
-        type="file"
-        onChange={handleImageUpload}
-        className="mb-2 hidden"
-        ref={fileInputRef}
-      />
     </div>
   );
 }
