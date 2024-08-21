@@ -10,6 +10,7 @@ export const useAuth = () => {
   const [profilePhoto, setProfilePhoto] = useState(null);
   const [photoPreview, setPhotoPreview] = useState(null); // 프로필 사진 미리보기 url 상태 관리
   const [isLogin, setIsLogin] = useState(true);
+  const [isSubmitting, setIsSubmitting] = useState(false); // 로그인 하는동안 버튼막기위해 사용
 
   // 로그인/회원가입 모드 전환
   const toggleAuthMode = () => setIsLogin(!isLogin);
@@ -68,6 +69,8 @@ const Auth = () => {
       return;
     }
 
+    setIsSubmitting(true);  // 서버 요청이 시작될 때 버튼을 비활성화하기 위한 상태 설정
+
     try {
       let response;
       // json 형식
@@ -103,20 +106,24 @@ const Auth = () => {
           });
 
           // 응답 데이터 출력
-          console.log("로그인 응답 데이터:", response.data);
+         // console.log("로그인 응답 데이터:", response.data);
 
           // 로그인 성공 시 처리
-          if (response.status === 200 && response.data.resultCode === 1) {
-            alert("로그인 성공");
-            navigate("/home");
-          } else {
-            alert("로그인 실패: " + response.data.msg);
+          if (response.status === 200) {
+            if (response.data.resultCode === 1) {
+              alert("로그인 성공");
+              navigate("/home");
+            } else if (response.data.resultCode === -1) {
+              alert("아이디나 비밀번호가 틀렸습니다."); 
+            } else {
+              alert("로그인 실패: " + response.data.msg);
+            }
           }
         } catch (error) {
-          console.error("로그인 요청 중 오류 발생:", error);
+          // console.error("로그인 요청 중 오류 발생:", error);
           alert("로그인 요청 중 오류가 발생했습니다.");
         }
-      } else {
+      }else {
         // 회원가입 요청 처리
         const data = { email, password };
         const formData = new FormData();
@@ -148,11 +155,13 @@ const Auth = () => {
         }
       }
     } catch (error) {
-      console.error("인증 중 오류 발생:", error);
+     // console.error("인증 중 오류 발생:", error);
       alert(
         error.response?.data?.message ||
           "서버에 오류가 발생했습니다. 다시 시도해 주세요."
       );
+    }finally{
+      setIsSubmitting(false); // 서버 요청이 완료되면 버튼 활성화
     }
   };
 
@@ -217,6 +226,7 @@ const Auth = () => {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             className="border rounded-lg p-2"
+            disabled={isSubmitting} 
           />
           <input
             type="password"
@@ -224,17 +234,20 @@ const Auth = () => {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             className="border rounded-lg p-2"
+            disabled={isSubmitting} 
           />
           <button
             type="submit"
             className="bg-gray-500 text-white font-bold py-2 rounded-lg hover:bg-gray-600 transition"
+            disabled={isSubmitting} 
           >
-            {isLogin ? "Login" : "Sign Up"}
+            {isSubmitting ? "Processing..." : isLogin ? "Login" : "Sign Up"}
           </button>
         </form>
         <button
           onClick={toggleAuthMode}
           className="mt-4 text-gray-500 hover:underline"
+          disabled={isSubmitting}
         >
           {isLogin ? "Switch to Sign Up" : "Switch to Login"}
         </button>

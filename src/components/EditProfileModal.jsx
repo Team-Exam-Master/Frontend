@@ -13,6 +13,7 @@ const EditProfileModal = ({ onClose, onUpdate }) => {
   const navigate = useNavigate();
 
   useEffect(() => {
+  
     const fetchProfileData = async () => {
       try {
         const response = await axios.get("/member/view");
@@ -28,7 +29,7 @@ const EditProfileModal = ({ onClose, onUpdate }) => {
             : "/default.png"
         );
       } catch (error) {
-        console.error("프로필 데이터를 가져오는 중 오류 발생:", error);
+        // console.error("프로필 데이터를 가져오는 중 오류 발생:", error);
 
         if (error.response && error.response.status === 401) {
           alert("인증에 실패했습니다. 다시 로그인해 주세요.");
@@ -42,7 +43,11 @@ const EditProfileModal = ({ onClose, onUpdate }) => {
     };
 
     fetchProfileData();
-  }, []);
+  
+  }, ); 
+
+
+
 
   const handleFileChange = (e) => {
     const file = e.target.files[0];
@@ -80,21 +85,21 @@ const EditProfileModal = ({ onClose, onUpdate }) => {
     try {
       setIsSubmitting(true);
 
-      const { data } = await axios.patch("/member/update", formData, {
+      const response = await axios.patch("/member/update", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
       });
 
-      if (data) {
-        setPhotoPreview(data.photoUrl);
+      if (response.status === 200) {
+        setPhotoPreview(response.data.photoUrl); // 모달내 사진 미리보기 업데이트
+        onUpdate(); // Header 정보 갱신
         alert("프로필이 성공적으로 업데이트되었습니다.");
+        onClose(); // 모달 닫기
       }
 
-      onUpdate();
-      onClose();
     } catch (error) {
-      console.error("프로필 업데이트 중 오류 발생:", error);
+      //console.error("프로필 업데이트 중 오류 발생:", error);
       alert("프로필 업데이트에 실패했습니다. 다시 시도해 주세요.");
     } finally {
       setIsSubmitting(false);
