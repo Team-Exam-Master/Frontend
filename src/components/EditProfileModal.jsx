@@ -52,6 +52,7 @@ const EditProfileModal = ({ onClose, onUpdate }) => {
       const reader = new FileReader();
       reader.onload = (event) => setPhotoPreview(event.target.result);
       reader.readAsDataURL(file);
+
     } else {
       alert("이미지 파일만 업로드할 수 있습니다.");
       setProfilePhoto(null);
@@ -104,7 +105,7 @@ const EditProfileModal = ({ onClose, onUpdate }) => {
     <div className="fixed inset-0 bg-black bg-opacity-70 flex justify-center items-center z-50">
       <div className="bg-gray-900 dark:bg-gray-800 text-gray-100 rounded-lg p-6 sm:p-8 w-full max-w-md sm:max-w-lg">
         <h2 className="text-2xl font-semibold text-gray-100 mb-6">
-          Edit profile
+          Edit Profile
         </h2>
 
         <div className="flex flex-col items-center">

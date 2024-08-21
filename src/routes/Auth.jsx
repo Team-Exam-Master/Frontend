@@ -169,6 +169,17 @@ const Auth = () => {
     }
   };
 
+  const handleGoogleLogin = async () => {
+    try {
+      const response = await axios.post("/auth/login/google");
+      if (response.status === 200) {
+        const { redirectUrl } = response.data;
+        console.log(redirectUrl);
+        location.href = redirectUrl;
+      }
+    } catch (error) {}
+  };
+
   return (
     <div className="relative flex flex-col items-center justify-center min-h-screen p-6 bg-gradient-to-r from-background-start via-gray-700 to-background-end">
       <button
@@ -247,7 +258,23 @@ const Auth = () => {
           >
             {isSubmitting ? "Processing..." : isLogin ? "Login" : "Sign Up"}
           </button>
+
+          <button
+            onClick={handleGoogleLogin}
+            className="mt-4 flex items-center justify-center w-full bg-white border border-gray-300 rounded-lg py-2 shadow-sm hover:bg-gray-100 transition"
+            style={{
+              backgroundImage: `url('google.png')`,
+              backgroundSize: "contain",
+              backgroundRepeat: "no-repeat",
+              backgroundPosition: "center",
+              width: "200px",
+              height: "50px",
+            }}
+          >
+            <span className="sr-only">Google Login</span>
+          </button>
         </form>
+
         <button
           onClick={toggleAuthMode}
           className="mt-4 text-gray-500 hover:underline"
