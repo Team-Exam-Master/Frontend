@@ -52,7 +52,6 @@ const EditProfileModal = ({ onClose, onUpdate }) => {
       const reader = new FileReader();
       reader.onload = (event) => setPhotoPreview(event.target.result);
       reader.readAsDataURL(file);
-
     } else {
       alert("이미지 파일만 업로드할 수 있습니다.");
       setProfilePhoto(null);
@@ -88,7 +87,11 @@ const EditProfileModal = ({ onClose, onUpdate }) => {
       });
 
       if (response.status === 200) {
-        setPhotoPreview(response.data.photoUrl); // 모달내 사진 미리보기 업데이트
+        setPhotoPreview(
+          userProfile.profilePhoto
+            ? `https://weasel-images.s3.amazonaws.com/${userProfile.profilePhoto}`
+            : "/default.png"
+        ); // 모달내 사진 미리보기 업데이트
         onUpdate(); // Header 정보 갱신
         alert("프로필이 성공적으로 업데이트되었습니다.");
         onClose(); // 모달 닫기
