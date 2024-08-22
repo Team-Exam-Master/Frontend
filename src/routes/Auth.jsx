@@ -63,15 +63,15 @@ const Auth = () => {
   const handleAuth = async (e) => {
     e.preventDefault();
 
-    if (!email || !password) {
-      alert("이메일과 비밀번호를 입력해 주세요.");
-      return;
-    }
+    // if (!email || !password) {
+    //   alert("이메일과 비밀번호를 입력해 주세요.");
+    //   return;
+    // }
 
-    if (!isValidEmail(email)) {
-      alert("유효한 이메일 주소를 입력해 주세요.");
-      return;
-    }
+    // if (!isValidEmail(email)) {
+    //   alert("유효한 이메일 주소를 입력해 주세요.");
+    //   return;
+    // }
 
     setIsSubmitting(true); // 서버 요청이 시작될 때 버튼을 비활성화하기 위한 상태 설정
 
@@ -169,15 +169,9 @@ const Auth = () => {
     }
   };
 
-  const handleGoogleLogin = async () => {
-    try {
-      const response = await axios.post("/auth/login/google");
-      if (response.status === 200) {
-        const { redirectUrl } = response.data;
-        console.log(redirectUrl);
-        location.href = redirectUrl;
-      }
-    } catch (error) {}
+  const handleGoogleLogin = () => {
+    window.location.href =
+      "https://weasel-backend.kkamji.net/oauth2/authorization/google";
   };
 
   return (
@@ -259,20 +253,18 @@ const Auth = () => {
             {isSubmitting ? "Processing..." : isLogin ? "Login" : "Sign Up"}
           </button>
 
-          <button
-            onClick={handleGoogleLogin}
-            className="mt-4 flex items-center justify-center w-full bg-white border border-gray-300 rounded-lg py-2 shadow-sm hover:bg-gray-100 transition"
-            style={{
-              backgroundImage: `url('google.png')`,
-              backgroundSize: "contain",
-              backgroundRepeat: "no-repeat",
-              backgroundPosition: "center",
-              width: "200px",
-              height: "50px",
-            }}
-          >
-            <span className="sr-only">Google Login</span>
-          </button>
+          <div className="mt-4 flex items-center justify-center">
+            <img
+              src="google.png"
+              alt="Google Login"
+              onClick={handleGoogleLogin}
+              className="cursor-pointer shadow-sm hover:opacity-90 transition"
+              style={{
+                width: "200px",
+                height: "50px",
+              }}
+            />
+          </div>
         </form>
 
         <button
