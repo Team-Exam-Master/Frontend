@@ -62,7 +62,7 @@ const Header = () => {
       await axios.get("/logout");
       alert("로그아웃 되었습니다.");
     } catch (error) {
-      // console.error("로그아웃 중 오류 발생:", error);
+     // console.error("로그아웃 중 오류 발생:", error);
       alert("로그아웃에 실패했습니다.");
     } finally {
       setIsLoggedIn(false); // 로그인 상태를 해제
@@ -71,16 +71,18 @@ const Header = () => {
     }
   };
 
+  // 프로필 업데이트를 처리하는 함수
   const handleUpdate = async () => {
     try {
       const { status, data } = await axios.get("/member/view");
 
-      // console.log("Profile update data:", data);
-      // console.log("Email:", data.email);
-     // console.log("Updated profile data:", data); // API 응답 데이터 확인
       if (status === 200 && data) {
-        setUserProfile(data); // 서버에서 받은 데이터로 사용자 프로필을 업데이트
-       // console.log("User profile updated:", data); // 상태 업데이트 확인
+        setUserProfile({
+          ...data,
+          profilePhoto: data.profilePhoto
+            ? `https://weasel-images.s3.amazonaws.com/${data.profilePhoto}`
+            : "/default.png",
+        });
       }
     } catch (error) {
       // console.error("프로필 갱신 중 오류 발생:", error);
