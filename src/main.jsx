@@ -7,6 +7,7 @@ import Home, { loader as historyLoader } from "./routes/Home";
 import Start from "./routes/Start";
 import Auth from "./routes/Auth";
 import AuthProvider from "./components/AuthContext";
+import Social from "./routes/Social";
 
 const router = createBrowserRouter([
   {
@@ -22,6 +23,11 @@ const router = createBrowserRouter([
   {
     path: "/auth",
     element: <Auth />, // 인증 페이지
+  },
+
+  {
+    path: "/social",
+    element: <Social />, // 소셜 로그인 받는 api 페이지
   },
 ]);
 
