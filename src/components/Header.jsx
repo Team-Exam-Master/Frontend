@@ -6,8 +6,7 @@ import EditProfileModal from "./EditProfileModal";
 // 사용자 프로필의 초기 상태
 const INITIAL_USER_PROFILE = {
   email: null,
-  photoUrl: null,
-  id: null,
+  profilePhoto: null,
 };
 
 const Header = () => {
@@ -23,20 +22,21 @@ const Header = () => {
       try {
         const { status, data } = await axios.get("/member/view");
 
-        console.log("Fetched user profile data:", data);
-        console.log("Email:", data.email);
-        // console.log("Profile Photo URL:", data.photoUrl);
-
         if (status === 200 && data) {
-          setUserProfile(data);
+          setUserProfile({
+            ...data,
+            profilePhoto: data.profilePhoto
+              ? `https://weasel-images.s3.amazonaws.com/${data.profilePhoto}`
+              : "/default.png",
+          });
           setIsLoggedIn(true);
         }
       } catch (error) {
         if (error.response && error.response.status === 401) {
-          console.error("인증되지 않은 사용자입니다. 다시 로그인해 주세요.");
-          //navigate("/auth");
+          alert("인증되지 않은 사용자입니다. 다시 로그인해 주세요.");
+          navigate("/auth");
         } else {
-          console.error("프로필 데이터를 가져오는 중 오류 발생:", error);
+
         }
       }
     };
@@ -70,15 +70,19 @@ const Header = () => {
     }
   };
 
+  // 프로필 업데이트를 처리하는 함수
   const handleUpdate = async () => {
     try {
       const { status, data } = await axios.get("/member/view");
 
-      console.log("Profile update data:", data);
-      console.log("Email:", data.email);
-
       if (status === 200 && data) {
-        setUserProfile(data); // 서버에서 받은 데이터로 사용자 프로필을 업데이트
+        setUserProfile({
+          ...userProfile,
+          profilePhoto: data.profilePhoto
+            ? `https://weasel-images.s3.amazonaws.com/${data.profilePhoto}`
+            : "/default.png",
+        });
+
       }
     } catch (error) {
       console.error("프로필 갱신 중 오류 발생:", error);
@@ -127,7 +131,7 @@ const Header = () => {
     </div>
   );
 
-  // 루트 페이지,auth 페이지 헤더 숨기기
+  // 루트 페이지, auth 페이지 헤더 숨기기
   if (window.location.pathname === "/") return null;
   if (window.location.pathname === "/auth") return null;
 
@@ -156,11 +160,12 @@ const Header = () => {
             className="w-8 h-8 rounded-full"
             style={{
               backgroundImage: userProfile.profilePhoto
-                ? `url('https://weasel-images.s3.amazonaws.com/${userProfile.profilePhoto}')`
+                ? `url('${userProfile.profilePhoto}')`
                 : `url('/default.png')`,
-              backgroundColor: userProfile.profilePhoto
-                ? "transparent"
-                : "#d1d5db",
+              backgroundColor:
+                userProfile.profilePhoto === "/default.png"
+                  ? "#d1d5db"
+                  : "transparent",
               backgroundSize: "cover",
               backgroundPosition: "center",
             }}
@@ -173,7 +178,7 @@ const Header = () => {
         <EditProfileModal
           userProfile={userProfile}
           onClose={() => setIsModalOpen(false)}
-          onUpdate={handleUpdate}
+          onUpdate={handleUpdate} // 업데이트 후 호출할 함수
         />
       )}
     </nav>

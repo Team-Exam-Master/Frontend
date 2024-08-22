@@ -2,11 +2,13 @@ import React, { useState, useEffect } from "react";
 import axios from "../axios";
 import { useNavigate } from "react-router-dom";
 
-const EditProfileModal = ({ onClose, onUpdate }) => {
+const EditProfileModal = ({ onClose, onUpdate, userProfile }) => {
   const [email, setEmail] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [profilePhoto, setProfilePhoto] = useState(null);
-  const [photoPreview, setPhotoPreview] = useState(null);
+  const [photoPreview, setPhotoPreview] = useState(
+    userProfile?.profilePhoto || null
+  );
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [memberId, setMemberId] = useState(null);
   const [isFormChanged, setIsFormChanged] = useState(false);
@@ -18,6 +20,7 @@ const EditProfileModal = ({ onClose, onUpdate }) => {
         const response = await axios.get("/member/view");
 
         const userProfile = response.data;
+        // console.log("Fetched User Profile:", userProfile);
         setEmail(userProfile.email);
         setMemberId(userProfile.id);
 
@@ -28,7 +31,7 @@ const EditProfileModal = ({ onClose, onUpdate }) => {
             : "/default.png"
         );
       } catch (error) {
-        console.error("프로필 데이터를 가져오는 중 오류 발생:", error);
+        // console.error("프로필 데이터를 가져오는 중 오류 발생:", error);
 
         if (error.response && error.response.status === 401) {
           alert("인증에 실패했습니다. 다시 로그인해 주세요.");
@@ -42,7 +45,7 @@ const EditProfileModal = ({ onClose, onUpdate }) => {
     };
 
     fetchProfileData();
-  }, [navigate]);
+  }, []);
 
   const handleFileChange = (e) => {
     const file = e.target.files[0];
@@ -65,26 +68,38 @@ const EditProfileModal = ({ onClose, onUpdate }) => {
   };
 
   const handleSaveChanges = async () => {
+    let data = "";
+    if (newPassword) {
+      data = JSON.stringify({ email: email, password: newPassword });
+    } else {
+      data = JSON.stringify({ email: email });
+    }
+
     const formData = new FormData();
-    if (newPassword) formData.append("password", newPassword);
-    if (profilePhoto) formData.append("profilePhoto", profilePhoto);
+
+    if (profilePhoto) formData.append("file", profilePhoto);
+    formData.append("updatedMemberDTOstr", data);
 
     try {
       setIsSubmitting(true);
 
-      const { data } = await axios.patch("/member/update", formData, {
+      const response = await axios.patch("/member/update", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
       });
 
-      if (data) {
-        setPhotoPreview(data.photoUrl);
-        alert("프로필이 성공적으로 업데이트되었습니다.");
-      }
+      if (response.status === 200) {
+        // console.log("Update response:", response.data);
+        const updatedProfilePhotoUrl = userProfile.profilePhoto
+          ? userProfile.profilePhoto
+          : "/default.png";
 
-      onUpdate();
-      onClose();
+        setPhotoPreview(updatedProfilePhotoUrl); // 모달 내 사진 미리보기 업데이트
+        onUpdate(); // Header 정보 갱신
+        alert("프로필이 성공적으로 업데이트되었습니다.");
+        onClose(); // 모달 닫기
+      }
     } catch (error) {
       console.error("프로필 업데이트 중 오류 발생:", error);
       alert("프로필 업데이트에 실패했습니다. 다시 시도해 주세요.");
@@ -97,7 +112,7 @@ const EditProfileModal = ({ onClose, onUpdate }) => {
     <div className="fixed inset-0 bg-black bg-opacity-70 flex justify-center items-center z-50">
       <div className="bg-gray-900 dark:bg-gray-800 text-gray-100 rounded-lg p-6 sm:p-8 w-full max-w-md sm:max-w-lg">
         <h2 className="text-2xl font-semibold text-gray-100 mb-6">
-          Edit profile
+          Edit Profile
         </h2>
 
         <div className="flex flex-col items-center">
