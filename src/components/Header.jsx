@@ -36,7 +36,6 @@ const Header = () => {
           alert("인증되지 않은 사용자입니다. 다시 로그인해 주세요.");
           navigate("/auth");
         } else {
-
         }
       }
     };
@@ -77,12 +76,11 @@ const Header = () => {
 
       if (status === 200 && data) {
         setUserProfile({
-          ...userProfile,
+          ...data,
           profilePhoto: data.profilePhoto
             ? `https://weasel-images.s3.amazonaws.com/${data.profilePhoto}`
             : "/default.png",
         });
-
       }
     } catch (error) {
       console.error("프로필 갱신 중 오류 발생:", error);

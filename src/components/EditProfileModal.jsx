@@ -23,7 +23,6 @@ const EditProfileModal = ({ onClose, onUpdate, userProfile }) => {
         // console.log("Fetched User Profile:", userProfile);
         setEmail(userProfile.email);
         setMemberId(userProfile.id);
-
         // 프로필 사진이 있는 경우 해당 URL, 없는 경우 기본 이미지를 설정
         setPhotoPreview(
           userProfile.profilePhoto
@@ -101,7 +100,7 @@ const EditProfileModal = ({ onClose, onUpdate, userProfile }) => {
         onClose(); // 모달 닫기
       }
     } catch (error) {
-      console.error("프로필 업데이트 중 오류 발생:", error);
+      //console.error("프로필 업데이트 중 오류 발생:", error);
       alert("프로필 업데이트에 실패했습니다. 다시 시도해 주세요.");
     } finally {
       setIsSubmitting(false);

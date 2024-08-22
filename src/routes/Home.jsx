@@ -9,6 +9,7 @@ import axios from "../axios";
 
 const SidebarContainer = styled.div`
   position: relative;
+  background-color: #1b171c;
 `;
 
 const Sidebar = styled.div`
@@ -45,7 +46,6 @@ const MainContainer = styled.div`
   flex-grow: 1;
   flex-direction: column;
   overflow: hidden;
-  border: 1px solid white;
 `;
 
 const Content = styled.div`
