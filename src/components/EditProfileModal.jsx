@@ -2,11 +2,13 @@ import React, { useState, useEffect } from "react";
 import axios from "../axios";
 import { useNavigate } from "react-router-dom";
 
-const EditProfileModal = ({ onClose, onUpdate }) => {
+const EditProfileModal = ({ onClose, onUpdate, userProfile }) => {
   const [email, setEmail] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [profilePhoto, setProfilePhoto] = useState(null);
-  const [photoPreview, setPhotoPreview] = useState(null);
+  const [photoPreview, setPhotoPreview] = useState(
+    userProfile?.profilePhoto || null
+  );
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [memberId, setMemberId] = useState(null);
   const [isFormChanged, setIsFormChanged] = useState(false);
@@ -20,7 +22,6 @@ const EditProfileModal = ({ onClose, onUpdate }) => {
         const userProfile = response.data;
         setEmail(userProfile.email);
         setMemberId(userProfile.id);
-
         // 프로필 사진이 있는 경우 해당 URL, 없는 경우 기본 이미지를 설정
         setPhotoPreview(
           userProfile.profilePhoto
@@ -87,11 +88,11 @@ const EditProfileModal = ({ onClose, onUpdate }) => {
       });
 
       if (response.status === 200) {
-        setPhotoPreview(
-          userProfile.profilePhoto
-            ? `https://weasel-images.s3.amazonaws.com/${userProfile.profilePhoto}`
-            : "/default.png"
-        ); // 모달내 사진 미리보기 업데이트
+        const updatedProfilePhotoUrl = userProfile.profilePhoto
+          ? `https://weasel-images.s3.amazonaws.com/${userProfile.profilePhoto}`
+          : "/default.png";
+
+        setPhotoPreview(updatedProfilePhotoUrl); // 모달 내 사진 미리보기 업데이트
         onUpdate(); // Header 정보 갱신
         alert("프로필이 성공적으로 업데이트되었습니다.");
         onClose(); // 모달 닫기
